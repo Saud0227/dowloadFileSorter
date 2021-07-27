@@ -38,4 +38,4 @@ while True:
             nFSorted+=1
     if nFSorted<0:
         print(nFSorted)
-    t.sleep(100)
+    t.sleep(600)
