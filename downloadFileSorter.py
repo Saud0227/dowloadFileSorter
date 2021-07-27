@@ -3,6 +3,7 @@ import pathlib as p
 import time as t
 import datetime
 
+active = True
 
 pa = p.Path.home()
 tDir = pa / "Downloads"
@@ -20,7 +21,11 @@ def checkFold():
         print(str(j) + " was created")
 
 os.chdir(tDir)
-while True:
+
+
+
+
+def mainloop():
     nFSorted=0
     filesToSort = [f for f in os.listdir(tDir) if p.Path( tDir / f ).is_file()]
     for fil in filesToSort:
@@ -39,3 +44,18 @@ while True:
     if nFSorted<0:
         print(nFSorted)
     t.sleep(600)
+
+
+
+
+def toggle(_input):
+    global avtive
+    if isinstance(_input, bool):
+        avtive = _input
+    else:
+        return active
+
+
+while True:
+    if active:
+        mainloop()
