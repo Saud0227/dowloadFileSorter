@@ -2,8 +2,10 @@ import os
 import pathlib as p
 import time as t
 import datetime
+from typing_extensions import runtime
 
 active = True
+runtime=0
 
 pa = p.Path.home()
 tDir = pa / "Downloads"
@@ -56,6 +58,18 @@ def toggle(_input):
         return active
 
 
+
+
+
+
+
+
+
+
+
+
+
 while True:
+    runtime+=1
     if active:
         mainloop()
