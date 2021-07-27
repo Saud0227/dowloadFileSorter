@@ -48,6 +48,27 @@ def mainloop():
     t.sleep(600)
 
 
+# rpyc servic definition
+
+
+
+# import rpyc
+
+# class MyService(rpyc.Service):
+#     def exposed_toggle(self, function = lambda x: x):
+#         return main.testthings(function = function)
+#     def exposed_runtime(self):
+#         return runtime
+
+# # start the rpyc server
+# from rpyc.utils.server import ThreadedServer
+# from threading import Thread
+# server = ThreadedServer(MyService, port = 12345)
+# t = Thread(target = server.start)
+# t.daemon = True
+# t.start()
+
+
 
 
 def toggle(_input):
