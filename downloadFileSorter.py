@@ -3,6 +3,8 @@ import pathlib as p
 import time as t
 import datetime
 from sys import exit
+from tkinter import Message
+from plyer import notification
 # from typing_extensions import runtime
 
 active = True
@@ -53,7 +55,7 @@ def mainloop():
             os.rename(str(fP),str(tDir / fSufix[1:] / fP.parts[-1]))
             nFSorted+=1
     if nFSorted<0:
-        print(nFSorted)
+        sendNot(str(nFSorted) + " files were sorted.")
 
 # rpyc servic definition
 
@@ -98,7 +100,7 @@ class MyService(rpyc.Service):
     def exposed_close(self):
         global sh
         sh = True
-        print("!!!")
+        sendNot("Dowload sorter procsess aborted", 50)
 
 
 
@@ -114,9 +116,10 @@ th.start()
 print("rpyc started")
 
 
+def sendNot(_text, _time):
+    notification.notify(title = "Dowload Sorter", message = _text, timeout = _time)
 
-
-print("Starting mainloop")
+sendNot("Dowload sorter initiated",10)
 while True:
     if sh:
         exit()
