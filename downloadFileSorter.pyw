@@ -1,9 +1,12 @@
+# This version executes main program in background 
+# and is the prefered way to run the program
+
+
 import os
 import pathlib as p
 import time as t
 import datetime
 from sys import exit
-from tkinter import Message
 from plyer import notification
 # from typing_extensions import runtime
 

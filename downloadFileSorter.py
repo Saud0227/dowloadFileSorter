@@ -1,9 +1,13 @@
+# This version executes main program with a console window 
+# and is used to see aditional information and usfull
+# for debugging
+
+
 import os
 import pathlib as p
 import time as t
 import datetime
 from sys import exit
-from tkinter import Message
 from plyer import notification
 # from typing_extensions import runtime
 
