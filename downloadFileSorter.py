@@ -6,8 +6,15 @@ from sys import exit
 # from typing_extensions import runtime
 
 active = True
+# Checks files while true
 runtime=0
+# Number of times main loop has run, 1/sec
+tToCheck=10
+# Checks for files at 0
+cc=0
+# Number of checks the program has done
 sh=False
+# When true, the program shutsdown the next loop
 
 pa = p.Path.home()
 tDir = pa / "Downloads"
@@ -70,7 +77,6 @@ def toggle(_input):
         return active
 
 
-
 import rpyc
 
 class MyService(rpyc.Service):
@@ -88,7 +94,7 @@ class MyService(rpyc.Service):
             return (active)
     def exposed_runtime(self):
         global active
-        return [runtime, active]
+        return [runtime, cc]
     def exposed_close(self):
         global sh
         sh = True
@@ -115,11 +121,14 @@ while True:
     if sh:
         exit()
     runtime+=1
-    if active:
+    tToCheck-=1
+    if active and tToCheck<=0:
         mainloop()
+        cc+=1
+        tToCheck=100
     print(runtime,active)
     # active= not active
-    t.sleep(10)
+    t.sleep(1)
 
 
 # cd Desktop\Projects\python\downloadFileSorter
