@@ -1,11 +1,17 @@
 from time import sleep
 import rpyc
 import sys 
-
-conn = rpyc.connect("localhost", 12345)
+try:
+    conn = rpyc.connect("localhost", 12345)
+except:
+    print("Main program is not running, console will be aborted")
+    sleep(5)
+    sys.exit()
 c = conn.root
+
 cRT=0
-print('int console, type "help" for info about commands')
+print("Conection made\n")
+print('init console, type "help" for info about commands')
 while True:
     # tmpRT=c.runtime()
     # if tmpRT != cRT:
@@ -24,7 +30,7 @@ while True:
     elif _in[0] == "status":
         if len(_in) == 2:
             tmparg = _in[1]
-            if tmparg == "True" or tmparg == "False":
+            if tmparg == "true" or tmparg == "false":
                 print(c.toggleRun(tmparg))
                 # print("Main loop set to " + tmparg)
             else:
