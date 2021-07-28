@@ -2,10 +2,12 @@ import os
 import pathlib as p
 import time as t
 import datetime
-from typing_extensions import runtime
+from sys import exit
+# from typing_extensions import runtime
 
 active = True
 runtime=0
+sh=False
 
 pa = p.Path.home()
 tDir = pa / "Downloads"
@@ -45,52 +47,79 @@ def mainloop():
             nFSorted+=1
     if nFSorted<0:
         print(nFSorted)
-    t.sleep(600)
-
 
 # rpyc servic definition
 
 
-
-# import rpyc
-
-# class MyService(rpyc.Service):
-#     def exposed_toggle(self, function = lambda x: x):
-#         return main.testthings(function = function)
-#     def exposed_runtime(self):
-#         return runtime
-
-# # start the rpyc server
-# from rpyc.utils.server import ThreadedServer
-# from threading import Thread
-# server = ThreadedServer(MyService, port = 12345)
-# t = Thread(target = server.start)
-# t.daemon = True
-# t.start()
-
-
-
-
 def toggle(_input):
-    global avtive
-    if isinstance(_input, bool):
-        avtive = _input
+    global active
+    # print("\nActive")
+    # print(active, type(active))
+    # print("\nInput")
+    # print(_input, type(_input))
+    # print("\nAre they the same?")
+    # print(active == _input)
+    # print("\n")
+
+    if isinstance(_input, bool) and active != _input:
+        active = _input
+        return("status: " + str(active))
+    elif active == _input:
+        return ("Status is allready set to " + str(active))
     else:
         return active
 
 
 
+import rpyc
+
+class MyService(rpyc.Service):
+    def exposed_toggleRun(self,_arg):
+        global active, sh
+
+        # print("Toggle run is called with arg: " + _arg)
+        
+        if _arg == "True" or _arg == "False":
+            if _arg == "True":
+                return(toggle(True))
+            elif _arg == "False":
+                return(toggle(False))
+        else:
+            return (active)
+    def exposed_runtime(self):
+        global active
+        return [runtime, active]
+    def exposed_close(self):
+        global sh
+        sh = True
+        print("!!!")
 
 
 
 
+print("Starting rpyc")
+# start the rpyc server
+from rpyc.utils.server import ThreadedServer
+from threading import Thread
+server = ThreadedServer(MyService, port = 12345)
+th = Thread(target = server.start)
+th.daemon = True
+th.start()
+print("rpyc started")
 
 
 
 
-
-
+print("Starting mainloop")
 while True:
+    if sh:
+        exit()
     runtime+=1
     if active:
         mainloop()
+    print(runtime,active)
+    # active= not active
+    t.sleep(10)
+
+
+# cd Desktop\Projects\python\downloadFileSorter
