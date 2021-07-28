@@ -12,14 +12,19 @@ from plyer import notification
 
 active = True
 # Checks files while true
-runtime=0
+runtime = 0
 # Number of times main loop has run, 1/sec
-tToCheck=10
+tToCheck = 10
 # Checks for files at 0
-cc=0
+cc = 0
 # Number of checks the program has done
-sh=False
+sh = False
 # When true, the program shutsdown the next loop
+iC = False
+# When false, sort all items regardless of when they 
+# were created. This flag is keept at false unless 
+# executed via command from secondary application
+
 
 pa = p.Path.home()
 tDir = pa / "Downloads"
@@ -34,7 +39,7 @@ def checkFold():
             os.mkdir(i[1:])
             dirC.append(tDir / i[1:])
     for j in dirC:
-        print(str(j) + " was created")
+        sendNot(str(j) + " was created",10)
 
 os.chdir(tDir)
 
@@ -54,24 +59,18 @@ def mainloop():
         fTS=datetime.datetime.fromtimestamp(fts)
         cT=datetime.datetime.today()
         difT = cT - fTS
-        if difT.days>3:
+        if difT.days>3 or iC:
             os.rename(str(fP),str(tDir / fSufix[1:] / fP.parts[-1]))
             nFSorted+=1
     if nFSorted<0:
-        sendNot(str(nFSorted) + " files were sorted.")
+        sendNot(str(nFSorted) + " files were sorted.", 50)
 
 # rpyc servic definition
 
 
 def toggle(_input):
     global active
-    # print("\nActive")
-    # print(active, type(active))
-    # print("\nInput")
-    # print(_input, type(_input))
-    # print("\nAre they the same?")
-    # print(active == _input)
-    # print("\n")
+
 
     if isinstance(_input, bool) and active != _input:
         active = _input
@@ -92,7 +91,6 @@ class MyService(rpyc.Service):
     def exposed_toggleRun(self,_arg):
         global active, sh
 
-        # print("Toggle run is called with arg: " + _arg)
         
         if _arg == "true" or _arg == "false":
             if _arg == "true":
@@ -106,8 +104,13 @@ class MyService(rpyc.Service):
         return [runtime, cc]
     def exposed_close(self):
         global sh
-        sh = True
         sendNot("Dowload sorter procsess aborted", 50)
+        sh = True
+
+    def exposed_triggerCheck(self):
+        global iC
+        iC=True
+        return("Check triggered")
 
 
 
@@ -134,11 +137,12 @@ while True:
         exit()
     runtime+=1
     tToCheck-=1
-    if active and tToCheck<=0:
+    if (active and tToCheck<=0) or iC:
         mainloop()
+        if iC:
+            iC=False
         cc+=1
         tToCheck=100
-    print(runtime,active)
     # active= not active
     t.sleep(1)
 

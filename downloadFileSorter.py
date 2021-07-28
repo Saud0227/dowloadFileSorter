@@ -1,6 +1,5 @@
-# This version executes main program with a console window 
-# and is used to see aditional information and usfull
-# for debugging
+# This version executes main program in background 
+# and is the prefered way to run the program
 
 
 import os
@@ -13,14 +12,19 @@ from plyer import notification
 
 active = True
 # Checks files while true
-runtime=0
+runtime = 0
 # Number of times main loop has run, 1/sec
-tToCheck=10
+tToCheck = 10
 # Checks for files at 0
-cc=0
+cc = 0
 # Number of checks the program has done
-sh=False
+sh = False
 # When true, the program shutsdown the next loop
+iC = False
+# When false, sort all items regardless of when they 
+# were created. This flag is keept at false unless 
+# executed via command from secondary application
+
 
 pa = p.Path.home()
 tDir = pa / "Downloads"
@@ -55,11 +59,11 @@ def mainloop():
         fTS=datetime.datetime.fromtimestamp(fts)
         cT=datetime.datetime.today()
         difT = cT - fTS
-        if difT.days>3:
+        if difT.days>3 or iC:
             os.rename(str(fP),str(tDir / fSufix[1:] / fP.parts[-1]))
             nFSorted+=1
     if nFSorted<0:
-        sendNot(str(nFSorted) + " files were sorted.")
+        sendNot(str(nFSorted) + " files were sorted.",50)
 
 # rpyc servic definition
 
@@ -107,8 +111,13 @@ class MyService(rpyc.Service):
         return [runtime, cc]
     def exposed_close(self):
         global sh
-        sh = True
         sendNot("Dowload sorter procsess aborted", 50)
+        sh = True
+
+    def exposed_triggerCheck(self):
+        global iC
+        iC=True
+        return("Check triggered")
 
 
 
@@ -135,8 +144,11 @@ while True:
         exit()
     runtime+=1
     tToCheck-=1
-    if active and tToCheck<=0:
+    if (active and tToCheck<=0) or iC:
         mainloop()
+        if iC:
+            print("IC triggerd by cmd application")
+            iC=False
         cc+=1
         tToCheck=100
     print(runtime,active)
