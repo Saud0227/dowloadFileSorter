@@ -62,7 +62,7 @@ def mainloop():
         if difT.days>3 or iC:
             os.rename(str(fP),str(tDir / fSufix[1:] / fP.parts[-1]))
             nFSorted+=1
-    if nFSorted<0:
+    if nFSorted>0:
         sendNot(str(nFSorted) + " files were sorted.",50)
 
 # rpyc servic definition
