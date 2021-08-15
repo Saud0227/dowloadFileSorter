@@ -1,4 +1,4 @@
-# This version executes main program in background 
+# This version executes main program in background
 # and is the prefered way to run the program
 
 
@@ -21,8 +21,8 @@ cc = 0
 sh = False
 # When true, the program shutsdown the next loop
 iC = False
-# When false, sort all items regardless of when they 
-# were created. This flag is keept at false unless 
+# When false, sort all items regardless of when they
+# were created. This flag is kept at false unless
 # executed via command from secondary application
 
 
