@@ -1,5 +1,5 @@
 # This version executes main program in background
-# and is the prefered way to run the program
+# and is the preferred way to run the program
 
 
 import os
@@ -29,17 +29,17 @@ iC = False
 pa = p.Path.home()
 tDir = pa / "Downloads"
 # C:\Users\CarlJ\Downloads
-sufix = [".zip"]
+suffix = [".zip"]
 
 
 def checkFold():
     dirC=[]
-    for i in sufix:
+    for i in suffix:
         if p.Path.is_dir(tDir / i[1:]) is False:
             os.mkdir(i[1:])
             dirC.append(tDir / i[1:])
     for j in dirC:
-        sendNot(str(j) + " was created",10)
+        sendNot(str(j) + " was created", 10)
 
 os.chdir(tDir)
 
@@ -51,18 +51,18 @@ def mainloop():
     filesToSort = [f for f in os.listdir(tDir) if p.Path( tDir / f ).is_file()]
     for fil in filesToSort:
         fP=p.Path(tDir / fil)
-        fSufix = fP.suffix
-        if(fSufix not in sufix):
-            sufix.append(fSufix)
+        fsuffix = fP.suffix
+        if(fsuffix not in suffix):
+            suffix.append(fsuffix)
         checkFold()
         fts=fP.stat().st_ctime
         fTS=datetime.datetime.fromtimestamp(fts)
         cT=datetime.datetime.today()
         difT = cT - fTS
         if difT.days>3 or iC:
-            os.rename(str(fP),str(tDir / fSufix[1:] / fP.parts[-1]))
+            os.rename(str(fP),str(tDir / fsuffix[1:] / fP.parts[-1]))
             nFSorted+=1
-    if nFSorted<0:
+    if nFSorted>0:
         sendNot(str(nFSorted) + " files were sorted.", 50)
 
 # rpyc servic definition
