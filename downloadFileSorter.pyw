@@ -7,13 +7,13 @@ import pathlib as p
 import time as t
 import datetime
 from sys import exit
-from plyer import notification
+# from plyer import notification
 # from typing_extensions import runtime
 
 active = True
 # Checks files while true
 runtime = 0
-# Number of times main loop has run, 1/sec
+# Number of times main loop has run, 5/sec
 tToCheck = 10
 # Checks for files at 0
 cc = 0
@@ -24,6 +24,12 @@ iC = False
 # When false, sort all items regardless of when they
 # were created. This flag is kept at false unless
 # executed via command from secondary application
+sortedLog = []
+# List consising of arrays with three fields
+# First nmr is rt 
+# Second nmr is number of files sorted
+# Third is files sorted
+# Forth is a bool flag if the sorting was automatic or forced
 
 
 pa = p.Path.home()
@@ -39,7 +45,8 @@ def checkFold():
             os.mkdir(i[1:])
             dirC.append(tDir / i[1:])
     for j in dirC:
-        sendNot(str(j) + " was created", 10)
+        # sendNot(str(j) + " was created", 10)
+        pass
 
 os.chdir(tDir)
 
@@ -63,7 +70,8 @@ def mainloop():
             os.rename(str(fP),str(tDir / fsuffix[1:] / fP.parts[-1]))
             nFSorted+=1
     if nFSorted>0:
-        sendNot(str(nFSorted) + " files were sorted.", 50)
+        # sendNot(str(nFSorted) + " files were sorted.", 50)
+        pass
 
 # rpyc servic definition
 
@@ -75,9 +83,9 @@ def toggle(_input):
     if isinstance(_input, bool) and active != _input:
         active = _input
         if active:
-            sendNot("Download sorter resumed work", 10)
+            return("Download sorter resumed work")
         else:
-            sendNot("Download sorter paused",10)
+            return("Download sorter paused")
         return("status: " + str(active))
     elif active == _input:
         return ("Status is allready set to " + str(active))
@@ -89,7 +97,7 @@ import rpyc
 
 class MyService(rpyc.Service):
     def exposed_toggleRun(self,_arg):
-        global active, sh
+        global active, sh, sortedLog
 
         
         if _arg == "true" or _arg == "false":
@@ -104,8 +112,11 @@ class MyService(rpyc.Service):
         return [runtime, cc]
     def exposed_close(self):
         global sh
-        sendNot("Dowload sorter procsess aborted", 50)
+        # return("Dowload sorter procsess aborted")
         sh = True
+    def exposed_getLog(self):
+        global sortedLog
+        return sortedLog
 
     def exposed_triggerCheck(self):
         global iC
@@ -125,13 +136,13 @@ th.daemon = True
 th.start()
 print("rpyc started")
 
-
+""" 
 def sendNot(_text, _time):
     if not isinstance(_time, (float,int)) and _time < 10:
         _time = 10
     notification.notify(title = "Dowload Sorter", message = _text, timeout = _time)
-
-sendNot("Dowload sorter initiated",10)
+ """
+# sendNot("Dowload sorter initiated",10)
 while True:
     if sh:
         exit()
@@ -144,7 +155,7 @@ while True:
         cc+=1
         tToCheck=100
     # active= not active
-    t.sleep(1)
+    t.sleep(5)
 
 
 # cd Desktop\Projects\python\downloadFileSorter
