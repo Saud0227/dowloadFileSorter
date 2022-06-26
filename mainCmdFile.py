@@ -1,6 +1,6 @@
 from time import sleep
 import rpyc
-import sys 
+import sys
 try:
     conn = rpyc.connect("localhost", 12345)
 except:
@@ -14,7 +14,7 @@ c = conn.root
 
 c.initConnect()
 cRT=0
-print("Conection made\n")
+print("Connection made\n")
 print('init console, type "help" for info about commands')
 while True:
     # tmpRT=c.runtime()
@@ -24,26 +24,26 @@ while True:
     # sleep(5)
     _in = input(">").lower().split(" ")
     if(_in[0] == "help"):
-        print(" rt --> print main loop runtime \n help --> print this menu \n status --> (no args = return status, bool var = Set status \n closemain --> close the main program and this curent program \n close --> close this program\n triggercheck --> triggers main app to sort all files regardless of time since creation\n log --> prints the log" )
-    
-    
+        print(" rt --> print main loop runtime \n help --> print this menu \n status --> (no args = return status, bool var = Set status \n closemain --> close the main program and this current program \n close --> close this program\n triggercheck --> triggers main app to sort all files regardless of time since creation\n log --> prints the log" )
+
+
     elif _in[0] == "rt":
         print(c.runtime())
 
 
     elif _in[0] == "status":
         if len(_in) == 2:
-            tmparg = _in[1]
-            if tmparg == "true" or tmparg == "false":
-                print(c.toggleRun(tmparg))
-                # print("Main loop set to " + tmparg)
+            tmpArg = _in[1]
+            if tmpArg == "true" or tmpArg == "false":
+                print(c.toggleRun(tmpArg))
+                # print("Main loop set to " + tmpArg)
             else:
-                print(tmparg + " is not an suported variable")
+                print(tmpArg + " is not an supported variable")
         else:
             print("\nFetching status of mainloop")
             print(c.toggleRun("pass"))
-    
-    
+
+
     elif _in[0] == "closemain":
         c.close()
         print("Main closed, this script will be closed")
