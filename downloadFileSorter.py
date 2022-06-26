@@ -1,4 +1,4 @@
-# This version executes main program in background 
+# This version executes main program in background
 # and is the prefered way to run the program
 
 
@@ -19,10 +19,10 @@ tToCheck = 10
 cc = 0
 # Number of checks the program has done
 sh = False
-# When true, the program shutsdown the next loop
+# When true, the program shutdown the next loop
 iC = False
-# When false, sort all items regardless of when they 
-# were created. This flag is keept at false unless 
+# When false, sort all items regardless of when they
+# were created. This flag is kept at false unless
 # executed via command from secondary application
 
 
@@ -65,7 +65,7 @@ def mainloop():
     if nFSorted>0:
         sendNot(str(nFSorted) + " files were sorted.",50)
 
-# rpyc servic definition
+# RPyC service definition
 
 
 def toggle(_input):
@@ -98,7 +98,7 @@ class MyService(rpyc.Service):
         global active, sh
 
         # print("Toggle run is called with arg: " + _arg)
-        
+
         if _arg == "true" or _arg == "false":
             if _arg == "true":
                 return(toggle(True))
@@ -111,7 +111,7 @@ class MyService(rpyc.Service):
         return [runtime, cc]
     def exposed_close(self):
         global sh
-        sendNot("Dowload sorter procsess aborted", 50)
+        sendNot("Download sorter process aborted", 50)
         sh = True
 
     def exposed_triggerCheck(self):
@@ -136,9 +136,9 @@ print("rpyc started")
 def sendNot(_text, _time):
     if not isinstance(_time, (float,int)) and _time < 10:
         _time = 10
-    notification.notify(title = "Dowload Sorter", message = _text, timeout = _time)
+    notification.notify(title = "Download Sorter", message = _text, timeout = _time)
 
-sendNot("Dowload sorter initiated",10)
+sendNot("Download sorter initiated",10)
 while True:
     if sh:
         exit()
@@ -147,7 +147,7 @@ while True:
     if (active and tToCheck<=0) or iC:
         mainloop()
         if iC:
-            print("IC triggerd by cmd application")
+            print("IC triggered by cmd application")
             iC=False
         cc+=1
         tToCheck=100
