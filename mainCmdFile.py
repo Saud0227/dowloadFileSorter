@@ -7,8 +7,12 @@ except:
     print("Main program is not running, console will be aborted")
     sleep(5)
     sys.exit()
+
+
 c = conn.root
 
+
+c.initConnect()
 cRT=0
 print("Conection made\n")
 print('init console, type "help" for info about commands')

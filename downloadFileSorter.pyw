@@ -9,6 +9,11 @@ import datetime
 from sys import exit
 # from plyer import notification
 # from typing_extensions import runtime
+import logging
+logging.basicConfig(filename='app.log', format='%(asctime)s - %(message)s', level=logging.INFO)
+
+
+
 
 active = True
 # Checks files while true
@@ -45,8 +50,7 @@ def checkFold():
             os.mkdir(i[1:])
             dirC.append(tDir / i[1:])
     for j in dirC:
-        # sendNot(str(j) + " was created", 10)
-        pass
+        logging.info(f"{str(j)} was created")
 
 os.chdir(tDir)
 
@@ -70,8 +74,7 @@ def mainloop():
             os.rename(str(fP),str(tDir / fsuffix[1:] / fP.parts[-1]))
             nFSorted+=1
     if nFSorted>0:
-        # sendNot(str(nFSorted) + " files were sorted.", 50)
-        pass
+        logging.info(f"{nFSorted} files were sorted.")
 
 # rpyc servic definition
 
@@ -122,6 +125,9 @@ class MyService(rpyc.Service):
         global iC
         iC=True
         return("Check triggered")
+    
+    def exposed_initConnect(self):
+        logging.debug("Connection established")
 
 
 
@@ -134,15 +140,14 @@ server = ThreadedServer(MyService, port = 12345)
 th = Thread(target = server.start)
 th.daemon = True
 th.start()
-print("rpyc started")
-
+logging.debug("rpyc init")
 """ 
 def sendNot(_text, _time):
     if not isinstance(_time, (float,int)) and _time < 10:
         _time = 10
     notification.notify(title = "Dowload Sorter", message = _text, timeout = _time)
  """
-# sendNot("Dowload sorter initiated",10)
+logging.debug("Dowload sorter init")
 while True:
     if sh:
         exit()
