@@ -7,8 +7,10 @@ import pathlib as p
 import time as t
 import datetime
 from sys import exit
-from plyer import notification
-# from typing_extensions import runtime
+
+#RPyC imports
+from rpyc.utils.server import ThreadedServer
+from threading import Thread
 
 import logging
 logging.basicConfig(filename='app.log', format='%(asctime)s - %(message)s', level=logging.INFO)
@@ -121,13 +123,7 @@ def mainloop():
 
 def toggle(_input):
     global active
-    # print("\nActive")
-    # print(active, type(active))
-    # print("\nInput")
-    # print(_input, type(_input))
-    # print("\nAre they the same?")
-    # print(active == _input)
-    # print("\n")
+
 
     if isinstance(_input, bool) and active != _input:
         active = _input
@@ -175,20 +171,14 @@ class MyService(rpyc.Service):
 
 logging.info("Starting rpyc")
 # start the rpyc server
-from rpyc.utils.server import ThreadedServer
-from threading import Thread
+
 server = ThreadedServer(MyService, port = 12345)
 th = Thread(target = server.start)
 th.daemon = True
 th.start()
 logging.info("rpyc started")
 
-"""
-def sendNot(_text, _time):
-    if not isinstance(_time, (float,int)) and _time < 10:
-        _time = 10
-    notification.notify(title = "Download Sorter", message = _text, timeout = _time)
-"""
+
 logging.info("Download sorter initiated")
 while True:
     if sh:
@@ -202,9 +192,7 @@ while True:
             forceCheckFlag=False
         cc+=1
         tToCheck=100
-    print(tToCheck, str(p.Path.cwd()))
-    # active= not active
+
     t.sleep(1)
 
 
-# cd Desktop\Projects\python\downloadFileSorter
