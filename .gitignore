@@ -1,0 +1,6 @@
+__pycache__/*
+build/*
+dist/*
+app.log
+/.vscode
+logFiles/*
